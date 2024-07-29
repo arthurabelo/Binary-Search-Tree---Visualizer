@@ -137,8 +137,11 @@ class BST:
             return None
 
     def maxValueNode(self, node):
-        if self.isnumber(node.val):
-            node.val = float(node.val)
+        try:
+            if self.isnumber(node.val):
+                node.val = float(node.val)
+        except AttributeError:
+            return None
         _, node.val = self.conv_float_str(0.0, node.val)
         current = node
         if node is not None:
@@ -188,15 +191,8 @@ class BST:
     def preorderTraversal(self, node, result=[]):
         if node:
             result.append(node.val)
-            self.preorderBTraversal(node.left, result)
-            self.preorderBTraversal(node.right, result)
-        return result
-    
-    def preorderBTraversal(self, node, result=[]):
-        if node:
-            result.append(node.val)
-            self.preorderTraversal(node.right, result)
             self.preorderTraversal(node.left, result)
+            self.preorderTraversal(node.right, result)
         return result
 
     def levelOrderTraversal(self):

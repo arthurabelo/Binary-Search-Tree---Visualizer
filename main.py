@@ -23,20 +23,27 @@ class App(Tk):
         self.create_widgets()
 
     def create_widgets(self):
+        button_frame = Frame(self)
+        button_frame.pack(anchor="n", pady=5)
+
+        Button(button_frame, text="Inserir", command=self.insert_name).pack(side="left", padx=1)
+        self.bind('<Return>', lambda e: self.insert_name())
+        Button(button_frame, text="Apagar", command=self.delete_name).pack(side="left", padx=1)
+        Button(button_frame, text="Carregar entrada.txt", command=self.abrir_entrada).pack(side="left", padx=1)
+        Button(button_frame, text="Exportar", command=self.exportar_entrada).pack(side="left", padx=1)
+        
         Label(self, text="Nome").pack()
         self.name_entry = Entry(self)
         self.name_entry.pack()
 
-        Button(self, text="Inserir", command=self.insert_name).place(x=570, y=20)
-        self.bind('<Return>', lambda e: self.insert_name())
-        Button(self, text="Apagar", command=self.delete_name).place(x=750, y=20)
-        Button(self, text="Carregar entrada.txt", command=self.abrir_entrada).place(x=500, y=50)
-        Button(self, text="Exportar", command=self.exportar_entrada).place(x=750, y=50)
-        Button(self, text="Mostrar informações", command=self.show_info).pack()
-        Button(self, text="Mostrar travessias", command=self.show_traversals).pack()
-        Button(self, text="Apagar", command=self.delete_name).place(x=entry_x + 100, y=entry_y + entry_height + 10)
-        Button(self, text="Carregar entrada.txt", command=self.abrir_entrada).place(x=entry_x + 190, y=entry_y + entry_height + 10)
-        Button(self, text="Exportar", command=self.exportar_entrada).place(x=entry_x + 310, y=entry_y + entry_height + 10)
+        Button(self, text="Mostrar informações", command=self.show_info).pack(pady=1)
+        Button(self, text="Mostrar travessias", command=self.show_traversals).pack(pady=1)
+        Button(self, text="Resetar Zoom", command=self.reset_zoom).pack(pady=1)
+        
+    def abrir_entrada(self):
+        try:
+            with open('entrada.txt', 'r') as file:
+                data = file.read().strip().split(',')
             for name in data:
                 if name:
                     if self.bst.exists(self.bst.root, name):
