@@ -34,12 +34,9 @@ class App(Tk):
         Button(self, text="Exportar", command=self.exportar_entrada).place(x=750, y=50)
         Button(self, text="Mostrar informações", command=self.show_info).pack()
         Button(self, text="Mostrar travessias", command=self.show_traversals).pack()
-        Button(self, text="Resetar Zoom", command=self.reset_zoom).pack()
-        
-    def abrir_entrada(self):
-        try:
-            with open('entrada.txt', 'r') as file:
-                data = file.read().strip().split(',')
+        Button(self, text="Apagar", command=self.delete_name).place(x=entry_x + 100, y=entry_y + entry_height + 10)
+        Button(self, text="Carregar entrada.txt", command=self.abrir_entrada).place(x=entry_x + 190, y=entry_y + entry_height + 10)
+        Button(self, text="Exportar", command=self.exportar_entrada).place(x=entry_x + 310, y=entry_y + entry_height + 10)
             for name in data:
                 if name:
                     if self.bst.exists(self.bst.root, name):
