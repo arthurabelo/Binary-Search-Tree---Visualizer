@@ -188,8 +188,15 @@ class BST:
     def preorderTraversal(self, node, result=[]):
         if node:
             result.append(node.val)
-            self.preorderTraversal(node.left, result)
+            self.preorderBTraversal(node.left, result)
+            self.preorderBTraversal(node.right, result)
+        return result
+    
+    def preorderBTraversal(self, node, result=[]):
+        if node:
+            result.append(node.val)
             self.preorderTraversal(node.right, result)
+            self.preorderTraversal(node.left, result)
         return result
 
     def levelOrderTraversal(self):
