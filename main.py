@@ -9,12 +9,11 @@ class App(Tk):
     def __init__(self):
         super().__init__()
         self.title('Árvore Binária de Busca')
-        self.geometry('{}x{}'.format(self.winfo_screenwidth(), self.winfo_screenheight()))
+        self.geometry('500x500')
         self.wm_state('zoomed')
         self.bst = BST()
         
         self.canvas = Canvas(self, width=self.winfo_screenwidth(), height=self.winfo_screenheight() / 0.01, bg="slategrey", relief=RAISED, bd=12)
-        self.canvas.place(x=0, y=160)
         
         self.canvas.bind('<MouseWheel>', self.zoom)
         self.canvas.bind("<ButtonPress-1>", self.start_drag)
@@ -39,6 +38,8 @@ class App(Tk):
         Button(self, text="Mostrar informações", command=self.show_info).pack(pady=1)
         Button(self, text="Mostrar travessias", command=self.show_traversals).pack(pady=1)
         Button(self, text="Resetar Zoom", command=self.reset_zoom).pack(pady=1)
+        
+        self.canvas.pack(pady = 2)
         
     def abrir_entrada(self):
         try:
@@ -139,7 +140,9 @@ class App(Tk):
         # Redesenha a árvore a partir da raiz
         self.draw_tree(self.bst.root)
         
-    def draw_tree(self, node, x = 680, y = 30, layer = -1, pos = {}):
+    def draw_tree(self, node, x=None, y=30, layer=-1, pos={}):
+        if x is None:
+            x = self.canvas.winfo_width() / 2
         if node is not None:
             # Calcular a largura do nó com base no tamanho do nome
             node_width = max(50, len(node.val) * 10)
