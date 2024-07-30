@@ -98,6 +98,9 @@ class App(Tk):
             self.name_entry.delete(0, 'end')
             
     def delete_name(self):
+        if self.bst.root is None:
+            messagebox.showerror("Erro", "A árvore está vazia")
+            self.canvas.delete("all")
         name = self.name_entry.get()
         if name == '':
                 name = self.bst.maxValueNode(self.bst.root)
@@ -105,8 +108,8 @@ class App(Tk):
             messagebox.showerror("Erro", f"'{name}' não existe na BST")
         else:
             if self.bst.remove(name):
-                self.reset_zoom()
                 # messagebox.showinfo("Sucesso! ", f"'{name}' foi removido da BST")
+                self.reset_zoom()
         self.name_entry.delete(0, 'end')
     
     def show_info(self):
@@ -118,10 +121,11 @@ class App(Tk):
         else:
             min_val = max_val = "A árvore está vazia"
         leaves = self.bst.leafNodes(self.bst.root, [])
-        internal_path_length = self.bst.internalPathLength(self.bst.root)
+        internal_path_length, calculo_internal_path_length = self.bst.internalPathLength(self.bst.root)
         is_balanced = self.bst.isBalanced(self.bst.root)
-        info = f"Tamanho: {size}\nAltura: {height}\nValor Mínimo: {min_val}\nValor Máximo: {max_val}\nNós folhas: {leaves}\n\nComprimento Interno: {internal_path_length}\n\nEstá balanceada? {is_balanced}"
+        info = f"Tamanho: {size}\nAltura: {height}\nValor Mínimo: {min_val}\nValor Máximo: {max_val}\nNós folhas: {leaves}\n\nEstá balanceada? {is_balanced}"
         messagebox.showinfo("Informação da Árvore", info)
+        messagebox.showinfo("Cálculo Comprimento Interno", f'Comprimento Interno: {internal_path_length}\n\n{calculo_internal_path_length}')
 
     def show_traversals(self):
         inorder = self.bst.inorderTraversal(self.bst.root, [])

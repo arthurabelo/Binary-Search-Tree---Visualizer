@@ -56,7 +56,7 @@ class BST:
         else:  # Quando key == node.val
             # Caso 1: Nó folha
             if node.left is None and node.right is None:
-                return None, False
+                return None, True
             # Caso 2: Nó com um filho
             elif node.left is None:
                 return node.right, True
@@ -159,11 +159,125 @@ class BST:
             self.leafNodes(node.right, leaves)
         return ', '.join(map(str, leaves))
 
-    def internalPathLength(self, node, depth=0):
+    def isBalanced(self, node):
+        if node is None:
+            return True
+        left_height = self.height(node.left) + 1 # Altura do ramo da esquerda mais 1 para contar com a raíz
+        right_height = self.height(node.right) + 1 # Altura do ramo da direita mais 1 para contar com a raíz
+        if abs(left_height - right_height) <= 1 and self.isBalanced(node.left) and self.isBalanced(node.right):
+            return True
+        return False
+
+    def inorderTraversal(self, node, result=[]):
+        if node:
+            self.inorderTraversal(node.left, result)
+            result.append(node.val)
+            self.inorderTraversal(node.right, result)
+        return result
+
+    def postorderTraversal(self, node, result=[]):
+        if node:
+            self.postorderTraversal(node.left, result)
+            self.postorderTraversal(node.right, result)
+            result.append(node.val)
+        return result
+
+    def preorderTraversal(self, node, result=[]):
+        if node:
+            result.append(node.val)
+            self.preorderTraversal(node.left, result)
+            self.preorderTraversal(node.right, result)
+        return result
+
+    def levelOrderTraversal(self):
+        if self.root is None:
+            return []
+        queue, result = [self.root], []
+        while queue:
+            current = queue.pop(0)
+            result.append(current.val)
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+        return result
+
+    def internalPathLength(self, node, depth=0, calculoInternalPath=''):
+        if node is None:
+            return 0, calculoInternalPath
+        else:
+            # Adiciona a informação do cálculo atual na string
+            calculoInternalPath += f"Node {node.val} -> Depth {depth}\n"
+            
+            # Calcula o comprimento do caminho interno para os filhos esquerdo e direito
+            left_length, calculoInternalPath = self.internalPathLength(node.left, depth + 1, calculoInternalPath)
+            right_length, calculoInternalPath = self.internalPathLength(node.right, depth + 1, calculoInternalPath)
+            
+            # Soma o comprimento do caminho interno atual com os comprimentos dos filhos
+            internalPath = depth + left_length + right_length
+            
+            return internalPath, calculoInternalPath
+
+    def exists(self, root, name):
+        if root is None:
+            return False
+        if self.isnumber(root.val):
+            root.val = float(root.val)
+        name, root.val = self.conv_float_str(name, root.val)
+        if root.val == name:
+            return True
+        elif name < root.val:
+            return self.exists(root.left, name)
+        else:
+            return self.exists(root.right, name)
+
+    def size(self, node):
         if node is None:
             return 0
         else:
-            return depth + self.internalPathLength(node.left, depth+1) + self.internalPathLength(node.right, depth+1)
+            return 1 + self.size(node.left) + self.size(node.right)
+
+    def height(self, node):
+        if node is None:
+            return -1
+        return max(self.height(node.left) + 1, self.height(node.right) + 1)
+
+    def minValueNode(self, node):
+        if self.isnumber(node.val):
+            node.val = float(node.val)
+        _, node.val = self.conv_float_str(0.0, node.val)
+        current = node
+        if node is not None:
+            while current.left is not None:
+                current = current.left
+            return current.val
+        else:
+            return None
+
+    def maxValueNode(self, node):
+        try:
+            if self.isnumber(node.val):
+                node.val = float(node.val)
+        except AttributeError:
+            return None
+        _, node.val = self.conv_float_str(0.0, node.val)
+        current = node
+        if node is not None:
+            while current.right is not None:
+                current = current.right
+            return current.val
+        else:
+            return None
+
+    def leafNodes(self, node, leaves=[]):
+        if node is not None:
+            if node.left is None and node.right is None:
+                leaves.append(node.val)
+            self.leafNodes(node.left, leaves)
+            self.leafNodes(node.right, leaves)
+        return ', '.join(map(str, leaves))
+    
+    
 
     def isBalanced(self, node):
         if node is None:
@@ -207,3 +321,16 @@ class BST:
             if current.right:
                 queue.append(current.right)
         return result
+
+    def _find_min(self, node):
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+
+    def remove(self, key):
+        if self.root is None:
+            return False
+        else:
+            self.root, deleted = self._remove(self.root, key)
+        return deleted
